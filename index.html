@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>イタリア語Flashcard - 50カテゴリー</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .stat {
+            background: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .timer {
+            font-size: 36px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #667eea;
+            transition: color 0.3s;
+        }
+        
+        .timer.warning {
+            color: #ff4444;
+            animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .category {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .word {
+            color: white;
+            font-size: 42px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .hint {
+            color: rgba(255,255,255,0.9);
+            font-size: 24px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        
+        .input-section {
+            margin: 20px 0;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .answer-input.correct {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+        
+        .answer-input.incorrect {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+        
+        .feedback {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+        
+        .feedback.correct {
+            color: #4CAF50;
+        }
+        
+        .feedback.incorrect {
+            color: #f44336;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+        
+        .btn-hint {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .btn-hint:hover {
+            background: #e68900;
+        }
+        
+        .btn-next {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-next:hover {
+            background: #5568d3;
+        }
+        
+        .btn-category {
+            background: #9c27b0;
+            color: white;
+        }
+        
+        .btn-category:hover {
+            background: #7b1fa2;
+        }
+        
+        .btn-start {
+            background: #667eea;
+            color: white;
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        
+        .btn-start:hover {
+            background: #5568d3;
+        }
+        
+        .category-select {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        
+        .category-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin: 5px 0;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover {
+            background: #e0e0e0;
+            border-color: #667eea;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .score {
+            font-size: 48px;
+            color: #4CAF50;
+            margin: 20px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+            
+            .word {
+                font-size: 32px;
+            }
+            
+            .hint {
+                font-size: 20px;
+            }
+            
+            .timer {
+                font-size: 28px;
+            }
+            
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .answer-input {
+                font-size: 16px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> 🟩⬜🟥イタリア語 Flashcard🟩⬜🟥</h1>
+        
+        <div id="menu" class="menu">
+            <div class="category-select">
+                <button class="category-btn" onclick="selectCategory('animals')">🐶 動物</button>
+                <button class="category-btn" onclick="selectCategory('food')">🍝 食べ物</button>
+                <button class="category-btn" onclick="selectCategory('vegetables')">🥕 野菜</button>
+                <button class="category-btn" onclick="selectCategory('fruits')">🍎 果物</button>
+                <button class="category-btn" onclick="selectCategory('drinks')">☕ 飲み物</button>
+                <button class="category-btn" onclick="selectCategory('weather')">☀️ 天気・自然</button>
+                <button class="category-btn" onclick="selectCategory('plants')">🌸 植物・花</button>
+                <button class="category-btn" onclick="selectCategory('seasons')">🍂 季節・時間</button>
+                <button class="category-btn" onclick="selectCategory('house')">🏠 家・家具</button>
+                <button class="category-btn" onclick="selectCategory('family')">👨‍👩‍👧‍👦 家庭・家族</button>
+                <button class="category-btn" onclick="selectCategory('relationships')">👥 人間関係</button>
+                <button class="category-btn" onclick="selectCategory('emotions')">😊 感情・性格</button>
+                <button class="category-btn" onclick="selectCategory('health')">💪 健康・体の部位</button>
+                <button class="category-btn" onclick="selectCategory('jobs')">👨‍💼 職業</button>
+                <button class="category-btn" onclick="selectCategory('clothes')">👔 服・アクセサリー</button>
+                <button class="category-btn" onclick="selectCategory('actions')">🧹 日常動作・家事</button>
+                <button class="category-btn" onclick="selectCategory('beauty')">💄 美容・身だしなみ</button>
+                <button class="category-btn" onclick="selectCategory('education')">📚 教育・学校</button>
+                <button class="category-btn" onclick="selectCategory('hobbies')">🎮 趣味・余暇</button>
+                <button class="category-btn" onclick="selectCategory('sports')">⚽ スポーツ</button>
+                <button class="category-btn" onclick="selectCategory('buildings')">🏢 建物・施設</button>
+                <button class="category-btn" onclick="selectCategory('places')">🧭 場所・方向</button>
+                <button class="category-btn" onclick="selectCategory('transport')">🚗 交通・乗り物</button>
+                <button class="category-btn" onclick="selectCategory('travel')">✈️ 旅行・観光</button>
+                <button class="category-btn" onclick="selectCategory('geography')">🌍 都市・国名・地理</button>
+                <button class="category-btn" onclick="selectCategory('disasters')">🌋 自然現象・災害</button>
+                <button class="category-btn" onclick="selectCategory('workplace')">💼 職場・会社</button>
+                <button class="category-btn" onclick="selectCategory('politics')">🏛️ 政治・社会</button>
+                <button class="category-btn" onclick="selectCategory('environment')">🌱 環境・地球</button>
+                <button class="category-btn" onclick="selectCategory('culture')">⛪ 文化・宗教</button>
+                <button class="category-btn" onclick="selectCategory('verbs')">🏃 動詞</button>
+                <button class="category-btn" onclick="selectCategory('nouns')">📦 名詞</button>
+                <button class="category-btn" onclick="selectCategory('adjectives')">🎨 形容詞</button>
+                <button class="category-btn" onclick="selectCategory('adverbs')">⚡ 副詞</button>
+                <button class="category-btn" onclick="selectCategory('prepositions')">🔗 前置詞</button>
+                <button class="category-btn" onclick="selectCategory('conjunctions')">➕ 接続詞</button>
+                <button class="category-btn" onclick="selectCategory('pronouns')">👤 代名詞</button>
+                <button class="category-btn" onclick="selectCategory('articles')">📝 冠詞</button>
+                <button class="category-btn" onclick="selectCategory('questions')">❓ 疑問詞</button>
+                <button class="category-btn" onclick="selectCategory('interjections')">💬 感嘆詞・あいづち</button>
+                <button class="category-btn" onclick="selectCategory('shopping')">💶 買い物・お金</button>
+                <button class="category-btn" onclick="selectCategory('restaurant')">🍽️ レストラン・料理</button>
+                <button class="category-btn" onclick="selectCategory('hospital')">🏥 健康・病院</button>
+                <button class="category-btn" onclick="selectCategory('climate')">🌡️ 天候・気候</button>
+                <button class="category-btn" onclick="selectCategory('technology')">💻 仕事道具・テクノロジー</button>
+                <button class="category-btn" onclick="selectCategory('housing')">🏘️ 住まい・不動産</button>
+                <button class="category-btn" onclick="selectCategory('media')">📱 メディア・通信</button>
+                <button class="category-btn" onclick="selectCategory('events')">🎉 イベント・祭り</button>
+                <button class="category-btn" onclick="selectCategory('arts')">🎨 芸術・音楽</button>
+                <button class="category-btn" onclick="selectCategory('history')">📜 歴史・時代</button>
+            </div>
+        </div>
+        
+        <div id="game" class="hidden">
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">カード</div>
+                    <div class="stat-value" id="cardCount">0/20</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">正解</div>
+                    <div class="stat-value" id="correct">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">不正解</div>
+                    <div class="stat-value" id="incorrect">0</div>
+                </div>
+            </div>
+            
+            <div class="timer" id="timer">10</div>
+            
+            <div class="card">
+                <div class="category" id="categoryName"></div>
+                <div class="word" id="word"></div>
+                <div class="hint hidden" id="hint"></div>
+            </div>
+            
+            <div class="input-section">
+                <input type="text" class="answer-input" id="answerInput" placeholder="日本語で答えを入力..." autocomplete="off">
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="buttons">
+                <button class="btn-hint" onclick="showHint()">💡 ヒント</button>
+                <button class="btn-next hidden" id="nextBtn" onclick="nextCard()">次へ →</button>
+                <button class="btn-category" onclick="backToMenu()">📚 カテゴリ選択</button>
+            </div>
+        </div>
+        
+        <div id="results" class="hidden results">
+            <h2>🎉 結果</h2>
+            <div class="score" id="finalScore"></div>
+            <button class="btn-start" onclick="backToMenu()">メニューに戻る</button>
+        </div>
+    </div>
+
+    <script>
+        const vocab = {
+            animals: {name: '🐶 動物', words: [{it: 'cane', ja: '犬'}, {it: 'gatto', ja: '猫'}, {it: 'uccello', ja: '鳥'}, {it: 'pesce', ja: '魚'}, {it: 'cavallo', ja: '馬'}, {it: 'mucca', ja: '牛'}, {it: 'maiale', ja: '豚'}, {it: 'pecora', ja: '羊'}, {it: 'topo', ja: 'ネズミ'}, {it: 'coniglio', ja: 'ウサギ'}, {it: 'leone', ja: 'ライオン'}, {it: 'tigre', ja: 'トラ'}, {it: 'elefante', ja: '象'}, {it: 'scimmia', ja: '猿'}, {it: 'orso', ja: 'クマ'}, {it: 'lupo', ja: 'オオカミ'}, {it: 'volpe', ja: 'キツネ'}, {it: 'serpente', ja: 'ヘビ'}, {it: 'farfalla', ja: '蝶'}, {it: 'ape', ja: 'ハチ'}]},
+            food: {name: '🍝 食べ物', words: [{it: 'pane', ja: 'パン'}, {it: 'pasta', ja: 'パスタ'}, {it: 'pizza', ja: 'ピザ'}, {it: 'carne', ja: '肉'}, {it: 'formaggio', ja: 'チーズ'}, {it: 'uovo', ja: '卵'}, {it: 'riso', ja: '米'}, {it: 'burro', ja: 'バター'}, {it: 'sale', ja: '塩'}, {it: 'zucchero', ja: '砂糖'}, {it: 'miele', ja: '蜂蜜'}, {it: 'olio', ja: 'オイル'}, {it: 'gelato', ja: 'アイスクリーム'}, {it: 'torta', ja: 'ケーキ'}, {it: 'biscotto', ja: 'ビスケット'}, {it: 'cioccolato', ja: 'チョコレート'}, {it: 'minestra', ja: 'スープ'}, {it: 'insalata', ja: 'サラダ'}, {it: 'dolce', ja: 'デザート'}, {it: 'panino', ja: 'サンドイッチ'}]},
+            vegetables: {name: '🥕 野菜', words: [{it: 'carota', ja: 'ニンジン'}, {it: 'patata', ja: 'ジャガイモ'}, {it: 'pomodoro', ja: 'トマト'}, {it: 'cipolla', ja: 'タマネギ'}, {it: 'aglio', ja: 'ニンニク'}, {it: 'lattuga', ja: 'レタス'}, {it: 'cetriolo', ja: 'キュウリ'}, {it: 'peperone', ja: 'ピーマン'}, {it: 'melanzana', ja: 'ナス'}, {it: 'zucchina', ja: 'ズッキーニ'}, {it: 'cavolo', ja: 'キャベツ'}, {it: 'spinaci', ja: 'ほうれん草'}, {it: 'broccoli', ja: 'ブロッコリー'}, {it: 'cavolfiore', ja: 'カリフラワー'}, {it: 'funghi', ja: 'きのこ'}, {it: 'mais', ja: 'トウモロコシ'}, {it: 'piselli', ja: 'えんどう豆'}, {it: 'fagioli', ja: '豆'}, {it: 'sedano', ja: 'セロリ'}, {it: 'asparagi', ja: 'アスパラガス'}]},
+            fruits: {name: '🍎 果物', words: [{it: 'mela', ja: 'リンゴ'}, {it: 'banana', ja: 'バナナ'}, {it: 'arancia', ja: 'オレンジ'}, {it: 'limone', ja: 'レモン'}, {it: 'pera', ja: '梨'}, {it: 'pesca', ja: '桃'}, {it: 'fragola', ja: 'イチゴ'}, {it: 'ciliegia', ja: 'サクランボ'}, {it: 'uva', ja: 'ブドウ'}, {it: 'anguria', ja: 'スイカ'}, {it: 'melone', ja: 'メロン'}, {it: 'ananas', ja: 'パイナップル'}, {it: 'kiwi', ja: 'キウイ'}, {it: 'mango', ja: 'マンゴー'}, {it: 'lampone', ja: 'ラズベリー'}, {it: 'mirtillo', ja: 'ブルーベリー'}, {it: 'prugna', ja: 'プラム'}, {it: 'albicocca', ja: 'アプリコット'}, {it: 'fico', ja: 'イチジク'}, {it: 'cocco', ja: 'ココナッツ'}]},
+            drinks: {name: '☕ 飲み物', words: [{it: 'acqua', ja: '水'}, {it: 'caffè', ja: 'コーヒー'}, {it: 'tè', ja: '紅茶'}, {it: 'latte', ja: '牛乳'}, {it: 'succo', ja: 'ジュース'}, {it: 'vino', ja: 'ワイン'}, {it: 'birra', ja: 'ビール'}, {it: 'coca cola', ja: 'コーラ'}, {it: 'limonata', ja: 'レモネード'}, {it: 'cioccolata calda', ja: 'ホットチョコレート'}, {it: 'cappuccino', ja: 'カプチーノ'}, {it: 'espresso', ja: 'エスプレッソ'}, {it: 'aranciata', ja: 'オレンジジュース'}, {it: 'tè freddo', ja: 'アイスティー'}, {it: 'acqua frizzante', ja: '炭酸水'}, {it: 'frullato', ja: 'スムージー'}, {it: 'aperitivo', ja: '食前酒'}, {it: 'liquore', ja: 'リキュール'}, {it: 'grappa', ja: 'グラッパ'}, {it: 'spumante', ja: 'スパークリングワイン'}]},
+            weather: {name: '☀️ 天気・自然', words: [{it: 'sole', ja: '太陽'}, {it: 'luna', ja: '月'}, {it: 'stella', ja: '星'}, {it: 'nuvola', ja: '雲'}, {it: 'pioggia', ja: '雨'}, {it: 'neve', ja: '雪'}, {it: 'vento', ja: '風'}, {it: 'tempesta', ja: '嵐'}, {it: 'cielo', ja: '空'}, {it: 'mare', ja: '海'}, {it: 'fiume', ja: '川'}, {it: 'lago', ja: '湖'}, {it: 'montagna', ja: '山'}, {it: 'collina', ja: '丘'}, {it: 'foresta', ja: '森'}, {it: 'albero', ja: '木'}, {it: 'terra', ja: '土地'}, {it: 'pietra', ja: '石'}, {it: 'sabbia', ja: '砂'}, {it: 'acqua', ja: '水'}]},
+            plants: {name: '🌸 植物・花', words: [{it: 'fiore', ja: '花'}, {it: 'rosa', ja: 'バラ'}, {it: 'tulipano', ja: 'チューリップ'}, {it: 'girasole', ja: 'ひまわり'}, {it: 'margherita', ja: 'デイジー'}, {it: 'orchidea', ja: '蘭'}, {it: 'giglio', ja: 'ユリ'}, {it: 'garofano', ja: 'カーネーション'}, {it: 'viola', ja: 'スミレ'}, {it: 'papavero', ja: 'ポピー'}, {it: 'erba', ja: '草'}, {it: 'foglia', ja: '葉'}, {it: 'ramo', ja: '枝'}, {it: 'radice', ja: '根'}, {it: 'tronco', ja: '幹'}, {it: 'seme', ja: '種'}, {it: 'pianta', ja: '植物'}, {it: 'cespuglio', ja: '低木'}, {it: 'muschio', ja: '苔'}, {it: 'fungo', ja: 'きのこ'}]},
+            seasons: {name: '🍂 季節・時間', words: [{it: 'primavera', ja: '春'}, {it: 'estate', ja: '夏'}, {it: 'autunno', ja: '秋'}, {it: 'inverno', ja: '冬'}, {it: 'giorno', ja: '日'}, {it: 'notte', ja: '夜'}, {it: 'mattina', ja: '朝'}, {it: 'pomeriggio', ja: '午後'}, {it: 'sera', ja: '夕方'}, {it: 'alba', ja: '夜明け'}, {it: 'tramonto', ja: '夕暮れ'}, {it: 'mezzanotte', ja: '真夜中'}, {it: 'mezzogiorno', ja: '正午'}, {it: 'ora', ja: '時間'}, {it: 'minuto', ja: '分'}, {it: 'secondo', ja: '秒'}, {it: 'settimana', ja: '週'}, {it: 'mese', ja: '月'}, {it: 'anno', ja: '年'}, {it: 'secolo', ja: '世紀'}]},
+            house: {name: '🏠 家・家具', words: [{it: 'casa', ja: '家'}, {it: 'stanza', ja: '部屋'}, {it: 'cucina', ja: 'キッチン'}, {it: 'bagno', ja: 'バスルーム'}, {it: 'camera da letto', ja: '寝室'}, {it: 'salotto', ja: 'リビング'}, {it: 'tavolo', ja: 'テーブル'}, {it: 'sedia', ja: '椅子'}, {it: 'letto', ja: 'ベッド'}, {it: 'armadio', ja: 'クローゼット'}, {it: 'divano', ja: 'ソファ'}, {it: 'finestra', ja: '窓'}, {it: 'porta', ja: 'ドア'}, {it: 'muro', ja: '壁'}, {it: 'pavimento', ja: '床'}, {it: 'soffitto', ja: '天井'}, {it: 'lampada', ja: 'ランプ'}, {it: 'tenda', ja: 'カーテン'}, {it: 'tappeto', ja: 'カーペット'}, {it: 'specchio', ja: '鏡'}]},
+            family: {name: '👨‍👩‍👧‍👦 家庭・家族', words: [{it: 'famiglia', ja: '家族'}, {it: 'madre', ja: '母'}, {it: 'padre', ja: '父'}, {it: 'figlio', ja: '息子'}, {it: 'figlia', ja: '娘'}, {it: 'fratello', ja: '兄弟'}, {it: 'sorella', ja: '姉妹'}, {it: 'nonno', ja: '祖父'}, {it: 'nonna', ja: '祖母'}, {it: 'zio', ja: '叔父'}, {it: 'zia', ja: '叔母'}, {it: 'cugino', ja: 'いとこ'}, {it: 'marito', ja: '夫'}, {it: 'moglie', ja: '妻'}, {it: 'genitori', ja: '両親'}, {it: 'bambino', ja: '子供'}, {it: 'nipote', ja: '孫'}, {it: 'suocero', ja: '義父'}, {it: 'suocera', ja: '義母'}, {it: 'cognato', ja: '義兄弟'}]},
+            relationships: {name: '👥 人間関係', words: [{it: 'amico', ja: '友達'}, {it: 'amica', ja: '女友達'}, {it: 'fidanzato', ja: '恋人(男)'}, {it: 'fidanzata', ja: '恋人(女)'}, {it: 'vicino', ja: '隣人'}, {it: 'collega', ja: '同僚'}, {it: 'capo', ja: '上司'}, {it: 'compagno', ja: '仲間'}, {it: 'conoscente', ja: '知り合い'}, {it: 'nemico', ja: '敵'}, {it: 'ospite', ja: 'ゲスト'}, {it: 'straniero', ja: '外国人'}, {it: 'cliente', ja: '顧客'}, {it: 'partner', ja: 'パートナー'}, {it: 'socio', ja: 'ビジネスパートナー'}, {it: 'rivale', ja: 'ライバル'}, {it: 'mentore', ja: 'メンター'}, {it: 'allievo', ja: '生徒'}, {it: 'insegnante', ja: '教師'}, {it: 'squadra', ja: 'チーム'}]},
+            emotions: {name: '😊 感情・性格', words: [{it: 'felice', ja: '幸せな'}, {it: 'triste', ja: '悲しい'}, {it: 'arrabbiato', ja: '怒った'}, {it: 'paura', ja: '恐怖'}, {it: 'amore', ja: '愛'}, {it: 'odio', ja: '憎しみ'}, {it: 'gioia', ja: '喜び'}, {it: 'sorpresa', ja: '驚き'}, {it: 'calmo', ja: '穏やかな'}, {it: 'nervoso', ja: '神経質な'}, {it: 'stanco', ja: '疲れた'}, {it: 'energico', ja: '元気な'}, {it: 'gentile', ja: '優しい'}, {it: 'cattivo', ja: '悪い'}, {it: 'onesto', ja: '正直な'}, {it: 'pigro', ja: '怠け者の'}, {it: 'coraggioso', ja: '勇敢な'}, {it: 'timido', ja: '恥ずかしがり屋の'}, {it: 'intelligente', ja: '賢い'}, {it: 'stupido', ja: '愚かな'}]},
+            health: {name: '💪 健康・体の部位', words: [{it: 'testa', ja: '頭'}, {it: 'occhio', ja: '目'}, {it: 'orecchio', ja: '耳'}, {it: 'naso', ja: '鼻'}, {it: 'bocca', ja: '口'}, {it: 'dente', ja: '歯'}, {it: 'collo', ja: '首'}, {it: 'spalla', ja: '肩'}, {it: 'braccio', ja: '腕'}, {it: 'mano', ja: '手'}, {it: 'dito', ja: '指'}, {it: 'petto', ja: '胸'}, {it: 'stomaco', ja: '胃'}, {it: 'schiena', ja: '背中'}, {it: 'gamba', ja: '脚'}, {it: 'ginocchio', ja: '膝'}, {it: 'piede', ja: '足'}, {it: 'cuore', ja: '心臓'}, {it: 'sangue', ja: '血'}, {it: 'pelle', ja: '皮膚'}]},
+            jobs: {name: '👨‍💼 職業', words: [{it: 'medico', ja: '医者'}, {it: 'infermiere', ja: '看護師'}, {it: 'insegnante', ja: '教師'}, {it: 'studente', ja: '学生'}, {it: 'ingegnere', ja: '技術者'}, {it: 'avvocato', ja: '弁護士'}, {it: 'cuoco', ja: 'コック'}, {it: 'cameriere', ja: 'ウェイター'}, {it: 'poliziotto', ja: '警察官'}, {it: 'pompiere', ja: '消防士'}, {it: 'pilota', ja: 'パイロット'}, {it: 'autista', ja: '運転手'}, {it: 'musicista', ja: '音楽家'}, {it: 'artista', ja: '芸術家'}, {it: 'scrittore', ja: '作家'}, {it: 'giornalista', ja: 'ジャーナリスト'}, {it: 'fotografo', ja: '写真家'}, {it: 'architetto', ja: '建築家'}, {it: 'contabile', ja: '会計士'}, {it: 'segretario', ja: '秘書'}]},
+            clothes: {name: '👔 服・アクセサリー', words: [{it: 'vestito', ja: '服'}, {it: 'camicia', ja: 'シャツ'}, {it: 'pantaloni', ja: 'ズボン'}, {it: 'gonna', ja: 'スカート'}, {it: 'giacca', ja: 'ジャケット'}, {it: 'cappotto', ja: 'コート'}, {it: 'scarpe', ja: '靴'}, {it: 'stivali', ja: 'ブーツ'}, {it: 'sandali', ja: 'サンダル'}, {it: 'cappello', ja: '帽子'}, {it: 'sciarpa', ja: 'スカーフ'}, {it: 'guanti', ja: '手袋'}, {it: 'calzini', ja: '靴下'}, {it: 'cravatta', ja: 'ネクタイ'}, {it: 'cintura', ja: 'ベルト'}, {it: 'borsa', ja: 'バッグ'}, {it: 'occhiali', ja: '眼鏡'}, {it: 'orologio', ja: '時計'}, {it: 'anello', ja: '指輪'}, {it: 'collana', ja: 'ネックレス'}]},
+            actions: {name: '🧹 日常動作・家事', words: [{it: 'pulire', ja: '掃除する'}, {it: 'lavare', ja: '洗う'}, {it: 'cucinare', ja: '料理する'}, {it: 'mangiare', ja: '食べる'}, {it: 'bere', ja: '飲む'}, {it: 'dormire', ja: '寝る'}, {it: 'svegliarsi', ja: '起きる'}, {it: 'lavarsi', ja: '洗う'}, {it: 'vestirsi', ja: '着替える'}, {it: 'pettinarsi', ja: '髪をとかす'}, {it: 'fare la spesa', ja: '買い物する'}, {it: 'stirare', ja: 'アイロンをかける'}, {it: 'spazzare', ja: '掃く'}, {it: 'lavare i piatti', ja: '皿を洗う'}, {it: 'fare il bucato', ja: '洗濯する'}, {it: 'rifare il letto', ja: 'ベッドを整える'}, {it: 'annaffiare', ja: '水をやる'}, {it: 'gettare la spazzatura', ja: 'ゴミを捨てる'}, {it: 'apparecchiare', ja: '食卓を整える'}, {it: 'sparecchiare', ja: '食卓を片付ける'}]},
+            beauty: {name: '💄 美容・身だしなみ', words: [{it: 'trucco', ja: '化粧'}, {it: 'rossetto', ja: '口紅'}, {it: 'profumo', ja: '香水'}, {it: 'shampoo', ja: 'シャンプー'}, {it: 'sapone', ja: '石鹸'}, {it: 'dentifricio', ja: '歯磨き粉'}, {it: 'spazzolino', ja: '歯ブラシ'}, {it: 'pettine', ja: 'くし'}, {it: 'spazzola', ja: 'ブラシ'}, {it: 'asciugamano', ja: 'タオル'}, {it: 'specchio', ja: '鏡'}, {it: 'crema', ja: 'クリーム'}, {it: 'lozione', ja: 'ローション'}, {it: 'rasoio', ja: 'かみそり'}, {it: 'smalto', ja: 'マニキュア'}, {it: 'forbici', ja: 'はさみ'}, {it: 'asciugacapelli', ja: 'ドライヤー'}, {it: 'mascara', ja: 'マスカラ'}, {it: 'fondotinta', ja: 'ファンデーション'}, {it: 'gel', ja: 'ジェル'}]},
+            education: {name: '📚 教育・学校', words: [{it: 'scuola', ja: '学校'}, {it: 'università', ja: '大学'}, {it: 'classe', ja: 'クラス'}, {it: 'lezione', ja: 'レッスン'}, {it: 'libro', ja: '本'}, {it: 'quaderno', ja: 'ノート'}, {it: 'penna', ja: 'ペン'}, {it: 'matita', ja: '鉛筆'}, {it: 'gomma', ja: '消しゴム'}, {it: 'righello', ja: '定規'}, {it: 'zaino', ja: 'リュック'}, {it: 'lavagna', ja: '黒板'}, {it: 'scrivania', ja: '机'}, {it: 'esame', ja: '試験'}, {it: 'compito', ja: '宿題'}, {it: 'voto', ja: '成績'}, {it: 'diploma', ja: '卒業証書'}, {it: 'laurea', ja: '学位'}, {it: 'biblioteca', ja: '図書館'}, {it: 'dizionario', ja: '辞書'}]},
+            hobbies: {name: '🎮 趣味・余暇', words: [{it: 'leggere', ja: '読書'}, {it: 'scrivere', ja: '書く'}, {it: 'disegnare', ja: '描く'}, {it: 'dipingere', ja: '絵を描く'}, {it: 'cantare', ja: '歌う'}, {it: 'ballare', ja: '踊る'}, {it: 'suonare', ja: '演奏する'}, {it: 'cucinare', ja: '料理する'}, {it: 'giardinaggio', ja: 'ガーデニング'}, {it: 'fotografia', ja: '写真撮影'}, {it: 'viaggiare', ja: '旅行する'}, {it: 'cinema', ja: '映画'}, {it: 'teatro', ja: '劇場'}, {it: 'museo', ja: '美術館'}, {it: 'videogioco', ja: 'ビデオゲーム'}, {it: 'puzzle', ja: 'パズル'}, {it: 'carte', ja: 'カード'}, {it: 'scacchi', ja: 'チェス'}, {it: 'collezione', ja: 'コレクション'}, {it: 'pesca', ja: '釣り'}]},
+            sports: {name: '⚽ スポーツ', words: [{it: 'calcio', ja: 'サッカー'}, {it: 'tennis', ja: 'テニス'}, {it: 'basket', ja: 'バスケットボール'}, {it: 'pallavolo', ja: 'バレーボール'}, {it: 'nuoto', ja: '水泳'}, {it: 'corsa', ja: 'ランニング'}, {it: 'ciclismo', ja: 'サイクリング'}, {it: 'sci', ja: 'スキー'}, {it: 'pattinaggio', ja: 'スケート'}, {it: 'ginnastica', ja: '体操'}, {it: 'yoga', ja: 'ヨガ'}, {it: 'boxe', ja: 'ボクシング'}, {it: 'judo', ja: '柔道'}, {it: 'karate', ja: '空手'}, {it: 'golf', ja: 'ゴルフ'}, {it: 'baseball', ja: '野球'}, {it: 'rugby', ja: 'ラグビー'}, {it: 'atletica', ja: '陸上競技'}, {it: 'scherma', ja: 'フェンシング'}, {it: 'arrampicata', ja: 'クライミング'}]},
+            buildings: {name: '🏢 建物・施設', words: [{it: 'casa', ja: '家'}, {it: 'appartamento', ja: 'アパート'}, {it: 'palazzo', ja: 'ビル'}, {it: 'ospedale', ja: '病院'}, {it: 'scuola', ja: '学校'}, {it: 'università', ja: '大学'}, {it: 'chiesa', ja: '教会'}, {it: 'museo', ja: '美術館'}, {it: 'biblioteca', ja: '図書館'}, {it: 'teatro', ja: '劇場'}, {it: 'cinema', ja: '映画館'}, {it: 'ristorante', ja: 'レストラン'}, {it: 'bar', ja: 'バー'}, {it: 'negozio', ja: '店'}, {it: 'supermercato', ja: 'スーパーマーケット'}, {it: 'banca', ja: '銀行'}, {it: 'posta', ja: '郵便局'}, {it: 'stazione', ja: '駅'}, {it: 'aeroporto', ja: '空港'}, {it: 'hotel', ja: 'ホテル'}]},
+            places: {name: '🧭 場所・方向', words: [{it: 'qui', ja: 'ここ'}, {it: 'lì', ja: 'そこ'}, {it: 'là', ja: 'あそこ'}, {it: 'dove', ja: 'どこ'}, {it: 'sopra', ja: '上'}, {it: 'sotto', ja: '下'}, {it: 'dentro', ja: '中'}, {it: 'fuori', ja: '外'}, {it: 'davanti', ja: '前'}, {it: 'dietro', ja: '後ろ'}, {it: 'vicino', ja: '近く'}, {it: 'lontano', ja: '遠く'}, {it: 'destra', ja: '右'}, {it: 'sinistra', ja: '左'}, {it: 'centro', ja: '中心'}, {it: 'angolo', ja: '角'}, {it: 'nord', ja: '北'}, {it: 'sud', ja: '南'}, {it: 'est', ja: '東'}, {it: 'ovest', ja: '西'}]},
+            transport: {name: '🚗 交通・乗り物', words: [{it: 'auto', ja: '車'}, {it: 'autobus', ja: 'バス'}, {it: 'treno', ja: '電車'}, {it: 'metro', ja: '地下鉄'}, {it: 'tram', ja: '路面電車'}, {it: 'taxi', ja: 'タクシー'}, {it: 'bicicletta', ja: '自転車'}, {it: 'moto', ja: 'バイク'}, {it: 'aereo', ja: '飛行機'}, {it: 'nave', ja: '船'}, {it: 'barca', ja: 'ボート'}, {it: 'traghetto', ja: 'フェリー'}, {it: 'camion', ja: 'トラック'}, {it: 'ambulanza', ja: '救急車'}, {it: 'vigili del fuoco', ja: '消防車'}, {it: 'polizia', ja: 'パトカー'}, {it: 'elicottero', ja: 'ヘリコプター'}, {it: 'scooter', ja: 'スクーター'}, {it: 'monopattino', ja: 'キックボード'}, {it: 'funivia', ja: 'ケーブルカー'}]},
+            travel: {name: '✈️ 旅行・観光', words: [{it: 'viaggio', ja: '旅行'}, {it: 'vacanza', ja: '休暇'}, {it: 'turista', ja: '観光客'}, {it: 'guida', ja: 'ガイド'}, {it: 'mappa', ja: '地図'}, {it: 'biglietto', ja: 'チケット'}, {it: 'passaporto', ja: 'パスポート'}, {it: 'valigia', ja: 'スーツケース'}, {it: 'zaino', ja: 'バックパック'}, {it: 'camera', ja: '部屋'}, {it: 'prenotazione', ja: '予約'}, {it: 'reception', ja: '受付'}, {it: 'spiaggia', ja: 'ビーチ'}, {it: 'montagna', ja: '山'}, {it: 'campeggio', ja: 'キャンプ'}, {it: 'escursione', ja: 'ハイキング'}, {it: 'souvenir', ja: 'お土産'}, {it: 'cartolina', ja: '絵はがき'}, {it: 'foto', ja: '写真'}, {it: 'avventura', ja: '冒険'}]},
+            geography: {name: '🌍 都市・国名・地理', words: [{it: 'Italia', ja: 'イタリア'}, {it: 'Roma', ja: 'ローマ'}, {it: 'Milano', ja: 'ミラノ'}, {it: 'Venezia', ja: 'ヴェネツィア'}, {it: 'Firenze', ja: 'フィレンツェ'}, {it: 'Napoli', ja: 'ナポリ'}, {it: 'Francia', ja: 'フランス'}, {it: 'Germania', ja: 'ドイツ'}, {it: 'Spagna', ja: 'スペイン'}, {it: 'Inghilterra', ja: 'イギリス'}, {it: 'America', ja: 'アメリカ'}, {it: 'Giappone', ja: '日本'}, {it: 'Cina', ja: '中国'}, {it: 'Europa', ja: 'ヨーロッパ'}, {it: 'Asia', ja: 'アジア'}, {it: 'Africa', ja: 'アフリカ'}, {it: 'continente', ja: '大陸'}, {it: 'oceano', ja: '海洋'}, {it: 'isola', ja: '島'}, {it: 'penisola', ja: '半島'}]},
+            disasters: {name: '🌋 自然現象・災害', words: [{it: 'terremoto', ja: '地震'}, {it: 'tsunami', ja: '津波'}, {it: 'vulcano', ja: '火山'}, {it: 'eruzione', ja: '噴火'}, {it: 'alluvione', ja: '洪水'}, {it: 'frana', ja: '地すべり'}, {it: 'valanga', ja: '雪崩'}, {it: 'tornado', ja: '竜巻'}, {it: 'uragano', ja: 'ハリケーン'}, {it: 'tempesta', ja: '嵐'}, {it: 'fulmine', ja: '雷'}, {it: 'tuono', ja: '雷鳴'}, {it: 'siccità', ja: '干ばつ'}, {it: 'incendio', ja: '火災'}, {it: 'incidente', ja: '事故'}, {it: 'emergenza', ja: '緊急事態'}, {it: 'disastro', ja: '災害'}, {it: 'pericolo', ja: '危険'}, {it: 'sicurezza', ja: '安全'}, {it: 'evacuazione', ja: '避難'}]},
+            workplace: {name: '💼 職場・会社', words: [{it: 'ufficio', ja: 'オフィス'}, {it: 'azienda', ja: '会社'}, {it: 'ditta', ja: '企業'}, {it: 'lavoro', ja: '仕事'}, {it: 'collega', ja: '同僚'}, {it: 'capo', ja: '上司'}, {it: 'dipendente', ja: '従業員'}, {it: 'direttore', ja: 'ディレクター'}, {it: 'riunione', ja: '会議'}, {it: 'progetto', ja: 'プロジェクト'}, {it: 'contratto', ja: '契約'}, {it: 'stipendio', ja: '給料'}, {it: 'promozione', ja: '昇進'}, {it: 'licenziamento', ja: '解雇'}, {it: 'pensione', ja: '年金'}, {it: 'ferie', ja: '有給休暇'}, {it: 'orario', ja: '勤務時間'}, {it: 'straordinario', ja: '残業'}, {it: 'carriera', ja: 'キャリア'}, {it: 'curriculum', ja: '履歴書'}]},
+            politics: {name: '🏛️ 政治・社会', words: [{it: 'governo', ja: '政府'}, {it: 'presidente', ja: '大統領'}, {it: 'ministro', ja: '大臣'}, {it: 'parlamento', ja: '議会'}, {it: 'elezioni', ja: '選挙'}, {it: 'voto', ja: '投票'}, {it: 'partito', ja: '政党'}, {it: 'democrazia', ja: '民主主義'}, {it: 'legge', ja: '法律'}, {it: 'costituzione', ja: '憲法'}, {it: 'diritto', ja: '権利'}, {it: 'dovere', ja: '義務'}, {it: 'libertà', ja: '自由'}, {it: 'giustizia', ja: '正義'}, {it: 'pace', ja: '平和'}, {it: 'guerra', ja: '戦争'}, {it: 'società', ja: '社会'}, {it: 'cittadino', ja: '市民'}, {it: 'popolazione', ja: '人口'}, {it: 'stato', ja: '国家'}]},
+            environment: {name: '🌱 環境・地球', words: [{it: 'ambiente', ja: '環境'}, {it: 'natura', ja: '自然'}, {it: 'inquinamento', ja: '汚染'}, {it: 'riciclaggio', ja: 'リサイクル'}, {it: 'plastica', ja: 'プラスチック'}, {it: 'carta', ja: '紙'}, {it: 'vetro', ja: 'ガラス'}, {it: 'metallo', ja: '金属'}, {it: 'energia', ja: 'エネルギー'}, {it: 'solare', ja: '太陽の'}, {it: 'eolico', ja: '風力の'}, {it: 'acqua', ja: '水'}, {it: 'aria', ja: '空気'}, {it: 'clima', ja: '気候'}, {it: 'temperatura', ja: '温度'}, {it: 'riscaldamento globale', ja: '地球温暖化'}, {it: 'sostenibile', ja: '持続可能な'}, {it: 'biodiversità', ja: '生物多様性'}, {it: 'foresta', ja: '森林'}, {it: 'deserto', ja: '砂漠'}]},
+            culture: {name: '⛪ 文化・宗教', words: [{it: 'cultura', ja: '文化'}, {it: 'tradizione', ja: '伝統'}, {it: 'religione', ja: '宗教'}, {it: 'chiesa', ja: '教会'}, {it: 'tempio', ja: '寺院'}, {it: 'moschea', ja: 'モスク'}, {it: 'sinagoga', ja: 'シナゴーグ'}, {it: 'Dio', ja: '神'}, {it: 'fede', ja: '信仰'}, {it: 'preghiera', ja: '祈り'}, {it: 'festa', ja: '祭り'}, {it: 'cerimonia', ja: '儀式'}, {it: 'santo', ja: '聖人'}, {it: 'angelo', ja: '天使'}, {it: 'miracolo', ja: '奇跡'}, {it: 'spirituale', ja: '精神的な'}, {it: 'arte', ja: '芸術'}, {it: 'monumento', ja: '記念碑'}, {it: 'patrimonio', ja: '遺産'}, {it: 'leggenda', ja: '伝説'}]},
+            verbs: {name: '🏃 動詞', words: [{it: 'essere', ja: 'である'}, {it: 'avere', ja: '持つ'}, {it: 'fare', ja: 'する'}, {it: 'andare', ja: '行く'}, {it: 'venire', ja: '来る'}, {it: 'dire', ja: '言う'}, {it: 'dare', ja: '与える'}, {it: 'vedere', ja: '見る'}, {it: 'sapere', ja: '知っている'}, {it: 'volere', ja: '欲しい'}, {it: 'potere', ja: 'できる'}, {it: 'dovere', ja: 'しなければならない'}, {it: 'parlare', ja: '話す'}, {it: 'ascoltare', ja: '聞く'}, {it: 'leggere', ja: '読む'}, {it: 'scrivere', ja: '書く'}, {it: 'capire', ja: '理解する'}, {it: 'pensare', ja: '考える'}, {it: 'amare', ja: '愛する'}, {it: 'odiare', ja: '憎む'}]},
+            nouns: {name: '📦 名詞', words: [{it: 'cosa', ja: 'もの'}, {it: 'persona', ja: '人'}, {it: 'posto', ja: '場所'}, {it: 'tempo', ja: '時間'}, {it: 'modo', ja: '方法'}, {it: 'vita', ja: '人生'}, {it: 'morte', ja: '死'}, {it: 'inizio', ja: '始まり'}, {it: 'fine', ja: '終わり'}, {it: 'parte', ja: '部分'}, {it: 'tutto', ja: '全て'}, {it: 'niente', ja: '何も'}, {it: 'problema', ja: '問題'}, {it: 'soluzione', ja: '解決'}, {it: 'domanda', ja: '質問'}, {it: 'risposta', ja: '答え'}, {it: 'idea', ja: 'アイデア'}, {it: 'progetto', ja: '計画'}, {it: 'obiettivo', ja: '目標'}, {it: 'risultato', ja: '結果'}]},
+            adjectives: {name: '🎨 形容詞', words: [{it: 'bello', ja: '美しい'}, {it: 'brutto', ja: '醜い'}, {it: 'grande', ja: '大きい'}, {it: 'piccolo', ja: '小さい'}, {it: 'nuovo', ja: '新しい'}, {it: 'vecchio', ja: '古い'}, {it: 'giovane', ja: '若い'}, {it: 'buono', ja: '良い'}, {it: 'cattivo', ja: '悪い'}, {it: 'caldo', ja: '暑い'}, {it: 'freddo', ja: '寒い'}, {it: 'lungo', ja: '長い'}, {it: 'corto', ja: '短い'}, {it: 'alto', ja: '高い'}, {it: 'basso', ja: '低い'}, {it: 'forte', ja: '強い'}, {it: 'debole', ja: '弱い'}, {it: 'veloce', ja: '速い'}, {it: 'lento', ja: '遅い'}, {it: 'facile', ja: '簡単な'}]},
+            adverbs: {name: '⚡ 副詞', words: [{it: 'molto', ja: 'とても'}, {it: 'poco', ja: '少し'}, {it: 'troppo', ja: 'あまりに'}, {it: 'abbastanza', ja: '十分に'}, {it: 'sempre', ja: 'いつも'}, {it: 'mai', ja: '決して'}, {it: 'spesso', ja: 'しばしば'}, {it: 'raramente', ja: 'めったに'}, {it: 'già', ja: 'すでに'}, {it: 'ancora', ja: 'まだ'}, {it: 'subito', ja: 'すぐに'}, {it: 'presto', ja: '早く'}, {it: 'tardi', ja: '遅く'}, {it: 'velocemente', ja: '速く'}, {it: 'lentamente', ja: 'ゆっくり'}, {it: 'bene', ja: 'よく'}, {it: 'male', ja: '悪く'}, {it: 'così', ja: 'そのように'}, {it: 'più', ja: 'もっと'}, {it: 'meno', ja: 'より少なく'}]},
+            prepositions: {name: '🔗 前置詞', words: [{it: 'di', ja: 'の'}, {it: 'a', ja: 'に'}, {it: 'da', ja: 'から'}, {it: 'in', ja: 'で'}, {it: 'con', ja: 'と'}, {it: 'su', ja: '上に'}, {it: 'per', ja: 'ために'}, {it: 'tra', ja: '間に'}, {it: 'fra', ja: '間に'}, {it: 'sopra', ja: '上に'}, {it: 'sotto', ja: '下に'}, {it: 'dentro', ja: '中に'}, {it: 'fuori', ja: '外に'}, {it: 'davanti', ja: '前に'}, {it: 'dietro', ja: '後ろに'}, {it: 'vicino a', ja: '近くに'}, {it: 'lontano da', ja: '遠くに'}, {it: 'verso', ja: '向かって'}, {it: 'contro', ja: '反対に'}, {it: 'senza', ja: 'なしで'}]},
+            conjunctions: {name: '➕ 接続詞', words: [{it: 'e', ja: 'そして'}, {it: 'o', ja: 'または'}, {it: 'ma', ja: 'しかし'}, {it: 'però', ja: 'でも'}, {it: 'quindi', ja: 'だから'}, {it: 'perché', ja: 'なぜなら'}, {it: 'se', ja: 'もし'}, {it: 'quando', ja: 'いつ'}, {it: 'mentre', ja: '間に'}, {it: 'anche', ja: 'も'}, {it: 'ancora', ja: 'まだ'}, {it: 'oppure', ja: 'あるいは'}, {it: 'né', ja: 'も～ない'}, {it: 'come', ja: 'どのように'}, {it: 'siccome', ja: 'なので'}, {it: 'sebbene', ja: '～にもかかわらず'}, {it: 'affinché', ja: '～するために'}, {it: 'finché', ja: '～まで'}, {it: 'prima che', ja: '～前に'}, {it: 'dopo che', ja: '～後に'}]},
+            pronouns: {name: '👤 代名詞', words: [{it: 'io', ja: '私'}, {it: 'tu', ja: 'あなた'}, {it: 'lui', ja: '彼'}, {it: 'lei', ja: '彼女'}, {it: 'noi', ja: '私たち'}, {it: 'voi', ja: 'あなたたち'}, {it: 'loro', ja: '彼ら'}, {it: 'mi', ja: '私を'}, {it: 'ti', ja: 'あなたを'}, {it: 'ci', ja: '私たちを'}, {it: 'vi', ja: 'あなたたちを'}, {it: 'lo', ja: 'それを(男性)'}, {it: 'la', ja: 'それを(女性)'}, {it: 'li', ja: 'それらを(男性複数)'}, {it: 'le', ja: 'それらを(女性複数)'}, {it: 'mio', ja: '私の'}, {it: 'tuo', ja: 'あなたの'}, {it: 'suo', ja: '彼の'}, {it: 'nostro', ja: '私たちの'}, {it: 'vostro', ja: 'あなたたちの'}]},
+            articles: {name: '📝 冠詞', words: [{it: 'il', ja: '定冠詞(男性単数)'}, {it: 'lo', ja: '定冠詞(男性単数-特殊)'}, {it: 'la', ja: '定冠詞(女性単数)'}, {it: "l'", ja: '定冠詞(母音前)'}, {it: 'i', ja: '定冠詞(男性複数)'}, {it: 'gli', ja: '定冠詞(男性複数-特殊)'}, {it: 'le', ja: '定冠詞(女性複数)'}, {it: 'un', ja: '不定冠詞(男性)'}, {it: 'uno', ja: '不定冠詞(男性-特殊)'}, {it: 'una', ja: '不定冠詞(女性)'}, {it: "un'", ja: '不定冠詞(女性-母音前)'}, {it: 'del', ja: '部分冠詞(男性単数)'}, {it: 'dello', ja: '部分冠詞(男性単数-特殊)'}, {it: 'della', ja: '部分冠詞(女性単数)'}, {it: 'dei', ja: '部分冠詞(男性複数)'}, {it: 'degli', ja: '部分冠詞(男性複数-特殊)'}, {it: 'delle', ja: '部分冠詞(女性複数)'}, {it: 'al', ja: '前置詞+冠詞(a+il)'}, {it: 'dal', ja: '前置詞+冠詞(da+il)'}, {it: 'nel', ja: '前置詞+冠詞(in+il)'}]},
+            questions: {name: '❓ 疑問詞', words: [{it: 'chi', ja: '誰'}, {it: 'che', ja: '何'}, {it: 'cosa', ja: '何'}, {it: 'dove', ja: 'どこ'}, {it: 'quando', ja: 'いつ'}, {it: 'perché', ja: 'なぜ'}, {it: 'come', ja: 'どのように'}, {it: 'quanto', ja: 'いくら'}, {it: 'quale', ja: 'どれ'}, {it: 'quanti', ja: 'いくつ(複数)'}, {it: 'quante', ja: 'いくつ(女性複数)'}, {it: 'a che ora', ja: '何時に'}, {it: 'da dove', ja: 'どこから'}, {it: 'fino a quando', ja: 'いつまで'}, {it: 'per quanto', ja: 'どれだけ'}, {it: 'con chi', ja: '誰と'}, {it: 'di chi', ja: '誰の'}, {it: 'per chi', ja: '誰のために'}, {it: 'da chi', ja: '誰から'}, {it: 'come mai', ja: 'どうして'}]},
+            interjections: {name: '💬 感嘆詞・あいづち', words: [{it: 'ciao', ja: 'やあ'}, {it: 'buongiorno', ja: 'おはよう'}, {it: 'buonasera', ja: 'こんばんは'}, {it: 'buonanotte', ja: 'おやすみ'}, {it: 'arrivederci', ja: 'さようなら'}, {it: 'grazie', ja: 'ありがとう'}, {it: 'prego', ja: 'どういたしまして'}, {it: 'scusa', ja: 'ごめん'}, {it: 'per favore', ja: 'お願いします'}, {it: 'sì', ja: 'はい'}, {it: 'no', ja: 'いいえ'}, {it: 'va bene', ja: 'わかった'}, {it: 'bravo', ja: 'よくできました'}, {it: 'bene', ja: 'いいね'}, {it: 'male', ja: '悪いね'}, {it: 'dai', ja: 'さあ'}, {it: 'mamma mia', ja: 'なんてこった'}, {it: 'per carità', ja: 'とんでもない'}, {it: 'magari', ja: 'できればね'}, {it: 'boh', ja: 'さあね'}]},
+            shopping: {name: '💶 買い物・お金', words: [{it: 'soldi', ja: 'お金'}, {it: 'euro', ja: 'ユーロ'}, {it: 'prezzo', ja: '価格'}, {it: 'costo', ja: 'コスト'}, {it: 'comprare', ja: '買う'}, {it: 'vendere', ja: '売る'}, {it: 'pagare', ja: '支払う'}, {it: 'spendere', ja: '使う'}, {it: 'sconto', ja: '割引'}, {it: 'saldi', ja: 'セール'}, {it: 'offerta', ja: 'オファー'}, {it: 'carta', ja: 'カード'}, {it: 'contanti', ja: '現金'}, {it: 'resto', ja: 'おつり'}, {it: 'scontrino', ja: 'レシート'}, {it: 'mercato', ja: '市場'}, {it: 'cliente', ja: 'お客'}, {it: 'commesso', ja: '店員'}, {it: 'cassa', ja: 'レジ'}, {it: 'carrello', ja: 'カート'}]},
+            restaurant: {name: '🍽️ レストラン・料理', words: [{it: 'ristorante', ja: 'レストラン'}, {it: 'menu', ja: 'メニュー'}, {it: 'ordinare', ja: '注文する'}, {it: 'piatto', ja: '皿'}, {it: 'antipasto', ja: '前菜'}, {it: 'primo', ja: '第一の皿'}, {it: 'secondo', ja: '第二の皿'}, {it: 'contorno', ja: '付け合わせ'}, {it: 'dessert', ja: 'デザート'}, {it: 'bevanda', ja: '飲み物'}, {it: 'conto', ja: '会計'}, {it: 'mancia', ja: 'チップ'}, {it: 'tovagliolo', ja: 'ナプキン'}, {it: 'forchetta', ja: 'フォーク'}, {it: 'coltello', ja: 'ナイフ'}, {it: 'cucchiaio', ja: 'スプーン'}, {it: 'bicchiere', ja: 'グラス'}, {it: 'bottiglia', ja: 'ボトル'}, {it: 'prenotazione', ja: '予約'}, {it: 'cameriere', ja: 'ウェイター'}]},
+            hospital: {name: '🏥 健康・病院', words: [{it: 'ospedale', ja: '病院'}, {it: 'dottore', ja: '医者'}, {it: 'infermiere', ja: '看護師'}, {it: 'paziente', ja: '患者'}, {it: 'malattia', ja: '病気'}, {it: 'febbre', ja: '熱'}, {it: 'tosse', ja: '咳'}, {it: 'raffreddore', ja: '風邪'}, {it: 'influenza', ja: 'インフルエンザ'}, {it: 'dolore', ja: '痛み'}, {it: 'mal di testa', ja: '頭痛'}, {it: 'mal di stomaco', ja: '腹痛'}, {it: 'farmacia', ja: '薬局'}, {it: 'medicina', ja: '薬'}, {it: 'pillola', ja: '錠剤'}, {it: 'iniezione', ja: '注射'}, {it: 'ricetta', ja: '処方箋'}, {it: 'cura', ja: '治療'}, {it: 'pronto soccorso', ja: '救急'}, {it: 'ambulanza', ja: '救急車'}]},
+            climate: {name: '🌡️ 天候・気候', words: [{it: 'clima', ja: '気候'}, {it: 'temperatura', ja: '気温'}, {it: 'caldo', ja: '暑さ'}, {it: 'freddo', ja: '寒さ'}, {it: 'umidità', ja: '湿度'}, {it: 'secco', ja: '乾燥した'}, {it: 'sereno', ja: '晴れ'}, {it: 'nuvoloso', ja: '曇り'}, {it: 'piovoso', ja: '雨の'}, {it: 'nevoso', ja: '雪の'}, {it: 'ventoso', ja: '風の強い'}, {it: 'nebbioso', ja: '霧の'}, {it: 'temporale', ja: '雷雨'}, {it: 'grandine', ja: 'ひょう'}, {it: 'brina', ja: '霜'}, {it: 'ghiaccio', ja: '氷'}, {it: 'arcobaleno', ja: '虹'}, {it: 'rugiada', ja: '露'}, {it: 'pressione', ja: '気圧'}, {it: 'previsioni', ja: '予報'}]},
+            technology: {name: '💻 仕事道具・テクノロジー', words: [{it: 'computer', ja: 'コンピュータ'}, {it: 'telefono', ja: '電話'}, {it: 'cellulare', ja: '携帯電話'}, {it: 'tablet', ja: 'タブレット'}, {it: 'internet', ja: 'インターネット'}, {it: 'email', ja: 'Eメール'}, {it: 'sito web', ja: 'ウェブサイト'}, {it: 'app', ja: 'アプリ'}, {it: 'tastiera', ja: 'キーボード'}, {it: 'mouse', ja: 'マウス'}, {it: 'schermo', ja: '画面'}, {it: 'stampante', ja: 'プリンター'}, {it: 'scanner', ja: 'スキャナー'}, {it: 'fotocamera', ja: 'カメラ'}, {it: 'video', ja: 'ビデオ'}, {it: 'foto', ja: '写真'}, {it: 'password', ja: 'パスワード'}, {it: 'file', ja: 'ファイル'}, {it: 'documento', ja: '文書'}, {it: 'software', ja: 'ソフトウェア'}]},
+            housing: {name: '🏘️ 住まい・不動産', words: [{it: 'affitto', ja: '賃貸'}, {it: 'affittare', ja: '借りる'}, {it: 'proprietario', ja: '家主'}, {it: 'inquilino', ja: '借家人'}, {it: 'contratto', ja: '契約'}, {it: 'deposito', ja: '敷金'}, {it: 'spese', ja: '費用'}, {it: 'bolletta', ja: '請求書'}, {it: 'mutuo', ja: '住宅ローン'}, {it: 'acquistare', ja: '購入する'}, {it: 'vendita', ja: '販売'}, {it: 'agenzia', ja: '代理店'}, {it: 'monolocale', ja: 'ワンルーム'}, {it: 'bilocale', ja: '1LDK'}, {it: 'trilocale', ja: '2LDK'}, {it: 'villa', ja: '別荘'}, {it: 'condominio', ja: 'マンション'}, {it: 'terrazza', ja: 'テラス'}, {it: 'balcone', ja: 'バルコニー'}, {it: 'giardino', ja: '庭'}]},
+            media: {name: '📱 メディア・通信', words: [{it: 'televisione', ja: 'テレビ'}, {it: 'radio', ja: 'ラジオ'}, {it: 'giornale', ja: '新聞'}, {it: 'rivista', ja: '雑誌'}, {it: 'notizia', ja: 'ニュース'}, {it: 'programma', ja: '番組'}, {it: 'film', ja: '映画'}, {it: 'serie', ja: 'シリーズ'}, {it: 'canale', ja: 'チャンネル'}, {it: 'podcast', ja: 'ポッドキャスト'}, {it: 'social media', ja: 'SNS'}, {it: 'messaggio', ja: 'メッセージ'}, {it: 'chiamata', ja: '通話'}, {it: 'videochamata', ja: 'ビデオ通話'}, {it: 'pubblicità', ja: '広告'}, {it: 'articolo', ja: '記事'}, {it: 'intervista', ja: 'インタビュー'}, {it: 'reportage', ja: 'ルポルタージュ'}, {it: 'trasmissione', ja: '放送'}, {it: 'streaming', ja: 'ストリーミング'}]},
+            events: {name: '🎉 イベント・祭り', words: [{it: 'festa', ja: 'パーティー'}, {it: 'compleanno', ja: '誕生日'}, {it: 'matrimonio', ja: '結婚式'}, {it: 'anniversario', ja: '記念日'}, {it: 'Natale', ja: 'クリスマス'}, {it: 'Capodanno', ja: '新年'}, {it: 'Pasqua', ja: '復活祭'}, {it: 'carnevale', ja: 'カーニバル'}, {it: 'concerto', ja: 'コンサート'}, {it: 'spettacolo', ja: 'ショー'}, {it: 'mostra', ja: '展示会'}, {it: 'festival', ja: 'フェスティバル'}, {it: 'cerimonia', ja: '式典'}, {it: 'laurea', ja: '卒業式'}, {it: 'conferenza', ja: '会議'}, {it: 'inaugurazione', ja: '開会式'}, {it: 'celebrazione', ja: '祝賀'}, {it: 'ricorrenza', ja: '記念行事'}, {it: 'sfilata', ja: 'パレード'}, {it: 'fuochi artificiali', ja: '花火'}]},
+            arts: {name: '🎨 芸術・音楽', words: [{it: 'arte', ja: '芸術'}, {it: 'pittura', ja: '絵画'}, {it: 'scultura', ja: '彫刻'}, {it: 'disegno', ja: 'デッサン'}, {it: 'musica', ja: '音楽'}, {it: 'canzone', ja: '歌'}, {it: 'orchestra', ja: 'オーケストラ'}, {it: 'strumento', ja: '楽器'}, {it: 'pianoforte', ja: 'ピアノ'}, {it: 'chitarra', ja: 'ギター'}, {it: 'violino', ja: 'バイオリン'}, {it: 'flauto', ja: 'フルート'}, {it: 'opera', ja: 'オペラ'}, {it: 'balletto', ja: 'バレエ'}, {it: 'danza', ja: 'ダンス'}, {it: 'poesia', ja: '詩'}, {it: 'letteratura', ja: '文学'}, {it: 'romanzo', ja: '小説'}, {it: 'racconto', ja: '物語'}, {it: 'teatro', ja: '演劇'}]},
+            history: {name: '📜 歴史・時代', words: [{it: 'storia', ja: '歴史'}, {it: 'antico', ja: '古代の'}, {it: 'moderno', ja: '現代の'}, {it: 'medioevo', ja: '中世'}, {it: 'rinascimento', ja: 'ルネサンス'}, {it: 'impero', ja: '帝国'}, {it: 'regno', ja: '王国'}, {it: 're', ja: '王'}, {it: 'regina', ja: '女王'}, {it: 'principe', ja: '王子'}, {it: 'principessa', ja: '王女'}, {it: 'battaglia', ja: '戦い'}, {it: 'rivoluzione', ja: '革命'}, {it: 'scoperta', ja: '発見'}, {it: 'invenzione', ja: '発明'}, {it: 'secolo', ja: '世紀'}, {it: 'epoca', ja: '時代'}, {it: 'civiltà', ja: '文明'}, {it: 'archeologo', ja: '考古学者'}, {it: 'monumento', ja: '記念碑'}]}
+        };
+
+        let currentCategory = null;
+        let currentWords = [];
+        let currentIndex = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let timeLeft = 10;
+        let timer = null;
+        let answered = false;
+
+        function selectCategory(category) {
+            currentCategory = category;
+            currentWords = [...vocab[category].words].sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            document.getElementById('categoryName').textContent = vocab[category].name;
+            
+            showCard();
+        }
+
+        function showCard() {
+            if (currentIndex >= currentWords.length) {
+                endGame();
+                return;
+            }
+
+            answered = false;
+            const word = currentWords[currentIndex];
+            document.getElementById('word').textContent = word.it;
+            const firstChar = word.ja.charAt(0);
+            document.getElementById('hint').textContent = `最初の文字は「${firstChar}」`;
+            document.getElementById('hint').classList.add('hidden');
+            document.getElementById('cardCount').textContent = `${currentIndex + 1}/20`;
+            document.getElementById('correct').textContent = correctCount;
+            document.getElementById('incorrect').textContent = incorrectCount;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').className = 'answer-input';
+            document.getElementById('answerInput').disabled = false;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('nextBtn').classList.add('hidden');
+            document.getElementById('answerInput').focus();
+            
+            resetTimer();
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 10;
+            updateTimerDisplay();
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (!answered) {
+                        checkAnswer();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timerEl = document.getElementById('timer');
+            timerEl.textContent = timeLeft;
+            
+            if (timeLeft <= 3) {
+                timerEl.classList.add('warning');
+            } else {
+                timerEl.classList.remove('warning');
+            }
+        }
+
+        function showHint() {
+            document.getElementById('hint').classList.remove('hidden');
+        }
+
+        function checkAnswer() {
+            if (answered) return;
+            
+            answered = true;
+            clearInterval(timer);
+            
+            const input = document.getElementById('answerInput');
+            const userAnswer = input.value.trim();
+            const correctAnswer = currentWords[currentIndex].ja;
+            
+            if (userAnswer === correctAnswer) {
+                correctCount++;
+                input.className = 'answer-input correct';
+                document.getElementById('feedback').textContent = '✓ 正解！';
+                document.getElementById('feedback').className = 'feedback correct';
+            } else {
+                incorrectCount++;
+                input.className = 'answer-input incorrect';
+                document.getElementById('feedback').textContent = `✗ 不正解。正解は「${correctAnswer}」`;
+                document.getElementById('feedback').className = 'feedback incorrect';
+            }
+            
+            input.disabled = true;
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+
+        function nextCard() {
+            currentIndex++;
+            showCard();
+        }
+
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (!answered) {
+                    checkAnswer();
+                } else {
+                    nextCard();
+                }
+            }
+        });
+
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+            const percentage = Math.round((correctCount / 20) * 100);
+            document.getElementById('finalScore').textContent = `${correctCount}/20 (${percentage}%)`;
+        }
+
+        function backToMenu() {
+            clearInterval(timer);
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('menu').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
